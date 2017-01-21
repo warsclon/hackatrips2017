@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Index</title>
+    <title>Cars</title>
 
     <meta name="description" content="Source code generated using layoutit.com">
     <meta name="author" content="LayoutIt!">
@@ -14,19 +14,18 @@
     <link href="css/style.css" rel="stylesheet">
 
   </head>
-  <body onload="getHotel()">
+  <body onload="getCookie()">
 
     <div class="container">
 
-	<h1>Hackatrips 2017 - Turismo Sostenible</h1>
+		<h1><a href="index.html">Hackatrips 2017 - Turismo Sostenible</a></h1>
 
 
-		<h3>Elige tu hotel</h3>
+		<h3>Elige coche</h3>
 		<form role="form">
 
-
 			<div class="form-group">
-				<label for="sel1">Personas:</label>
+				<label for="sel1">Persona en el coche:</label>
 				<select class="form-control" id="persons">
 					<option>1</option>
 					<option>2</option>
@@ -36,32 +35,22 @@
 			</div>
 
 			<div class="form-group">
-				<label for="sel1">Habitaciones:</label>
-				<select class="form-control" id="rooms">
-					<option>1</option>
-					<option>2</option>
-					<option>3</option>
-					<option>4</option>
+				<label for="sel1">Tipo de vehículo:</label>
+				<select class="form-control" id="typecar">
+					<option>Lite</option>
+					<option>Executive</option>
 				</select>
 			</div>
 
 			<div class="form-group">
-				<label for="sel1">Punto de origen:</label>
-				<select class="form-control" id="origin">
-					<option>Aeropuerto de Barajas</option>
-					<option>Estación de Chamartin</option>
-					<option>Estación de Atocha</option>
+				<label for="sel1">Tipo de uso:</label>
+				<select class="form-control" id="use">
+					<option>Compartido</option>
+					<option>Individual</option>
 				</select>
 			</div>
 
-			<div class="form-group">
-				<label for="sel1">Hoteles:</label>
-				<select class="form-control" id="hotel">
-				</select>
-			</div>
-
-
-			<button type="submit" class="btn btn-default" onclick="nextPage()">
+			<button type="submit" class="btn btn-default" onclick="nextPageResult()">
 				Buscar vehiculos
 			</button>
 
@@ -74,6 +63,8 @@
 
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
 	<script src="js/scripts.js"></script>
 	<script src="js/hotel.js"></script>
 	<script src="data/hotelbeds.js"></script>
