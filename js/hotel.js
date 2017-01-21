@@ -9,6 +9,8 @@ function getHotel() {
     //console.log(minube.length)
 
 
+
+
     var $select = $('#hotel');
 
     var $cabify = 	$('#cabify');
@@ -80,6 +82,8 @@ function printHotel(hotel) {
     console.debug(hotel)
     var hotelRoms = hotel.rooms;
 
+    setMap(parseFloat(hotel.longitude),parseFloat(hotel.latitude));
+
     var $htmlList = $('#infoHotel');
     $htmlList.append('<ul>');
     $htmlList.append('<li>Zona:' + hotel.zoneName + '</li>');
@@ -122,6 +126,44 @@ function printHotel(hotel) {
 }
 
 
+function printCabify() {
+    var $htmlList = $('#infoCabify');
+    $htmlList.append('<ul>');
+    if (cars.length > 0) {
+        for (e = 0; e < cars.length; e++) {
+            if (cars[e].vehicle_type.name.indexOf(typecar) > 0) {
+                $htmlList.append('<li><img width="20" height="20" src='+cars[e].vehicle_type.icons.regular+'> - ' + cars[e].vehicle_type.name + '</li>');
+                $htmlList.append('<li>tipo:' + cars[e].vehicle_type.name + '</li>');
+                $htmlList.append('<li>' + cars[e].vehicle_type.description + '</li>');
+                $htmlList.append('<li>Precio:' + cars[e].price_formatted + '</li>');
+            }
+        }
+    } else {
+        $htmlList.append('<li>Coches: 0</li>');
+    }
+    $htmlList.append('</ul>');
+
+}
+
+function setMap(lon,lat) {
+    console.log(lat)
+    console.log(lon)
+
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.transform([lon, lat],'EPSG:4326', 'EPSG:3857'),
+            zoom: 15
+        })
+    });
+}
+
+
 function initResult() {
     typecar = $.cookie('typecar');
     use = $.cookie('use');
@@ -137,7 +179,8 @@ function initResult() {
 
     for(i=0;i<hoteles.hotels.hotels.length;i++) {
         if(hoteles.hotels.hotels[i].name.indexOf(hotel) > -1) {
-            printHotel(hoteles.hotels.hotels[i])
+            printHotel(hoteles.hotels.hotels[i]);
+            printCabify()
         }
     }
 }
