@@ -16,11 +16,11 @@ function getHotel() {
 
     //$select.find('option').remove();
 
-    $select.append('<option value="Senator Gran Via">Senator Gran Via</option>');
     $select.append('<option value="Petit Palace Tres Cruces">Petit Palace Tres Cruces</option>');
     $select.append('<option value="Vincci Via 66">Vincci Via 66</option>');
     $select.append('<option value="Hotel Santo Domingo">Hotel Santo Domingo</option>');
-        for(i=0;i<hoteles.hotels.hotels.length;i++) {
+    $select.append('<option value="Senator Gran Vía">Senator Gran Via</option>');
+    for(i=0;i<hoteles.hotels.hotels.length;i++) {
             $select.append('<option value=' + hoteles.hotels.hotels[i].name+ '>' + hoteles.hotels.hotels[i].name + '</option>');
         }
 
@@ -41,12 +41,14 @@ function ChangeUrl(page, url) {
 function nextPage() {
     var hotelSelect =$('#hotel').find('option:selected').text();
     var originSelect =$('#origin').find('option:selected').text();
-    var roomsSelect =$('#rooms').find('option:selected').text();
-    var personsSelect =$('#persons').find('option:selected').text();
+    var personsSelect =$('#rooms').find('option:selected').text();
+    var breakfastSelect =$('#breakfast').find('option:selected').text();
+    var priceSelect =$('#price').find('option:selected').text();
     document.cookie = "hotel="+hotelSelect;
     document.cookie = "origin="+originSelect;
-    document.cookie = "rooms="+roomsSelect;
     document.cookie = "persons="+personsSelect;
+    document.cookie = "breakfast="+breakfastSelect;
+    document.cookie = "price="+priceSelect;
     ChangeUrl('page', 'cars.html');
 }
 
@@ -66,20 +68,76 @@ function nextPageResult() {
 
 }
 
-var person;
+var persons;
 var typecar;
 var use;
 var hotel;
 var origin;
-var rooms;
-var persons;
+var breakfast;
+var price;
+
+function printHotel(hotel) {
+    console.debug(hotel)
+    var hotelRoms = hotel.rooms;
+
+    var $htmlList = $('#infoHotel');
+    $htmlList.append('<ul>');
+    $htmlList.append('<li>Zona:' + hotel.zoneName + '</li>');
+    $htmlList.append('<li>Categoria:' + hotel.categoryName + '</li>');
+    if (hotelRoms.length > 0) {
+        for (e = 0; e < hotelRoms.length; e++) {
+            $htmlList.append('<li>Habitacion:' + hotelRoms[e].name + '</li>');
+            var rates = hotelRoms[e].rates;
+            if(rates.length > 0) {
+                for (r = 0; r < rates.length;r++) {
+                    /*if(r == 0) {
+                        $htmlList.append('<ul>');
+                    }*/
+                    $htmlList.append(' <li>Precio:' + rates[r].net + ' ('+rates[r].boardName+') - <input type="radio" ></li>');
+                    /*if (r == rates.length) {
+                        $htmlList.append('</ul>');
+                    }*/
+                }
+
+            }
+        }
+    } else {
+        $htmlList.append('<li>Habitaciones: 0</li>');
+    }
+    $htmlList.append('</ul>');
+    //list roms
+
+    /*
+<ul>
+    <li>Coffee</li>
+    <li>Tea
+    <ul>
+    <li>Black tea</li>
+    <li>Green tea</li>
+    </ul>
+    </li>
+    <li>Milk</li>
+    </ul>
+        */
+}
+
 
 function initResult() {
-    person = $.cookie('persons');
     typecar = $.cookie('typecar');
     use = $.cookie('use');
     hotel = $.cookie('hotel');
     origin = $.cookie('origin');
-    rooms = $.cookie('rooms');
     persons = $.cookie('persons');
+    breakfast = $.cookie('breakfast');
+    price = $.cookie('price');
+
+    $('#originh').append(origin.trim());
+    $('#hotelh').append(hotel.trim());
+
+
+    for(i=0;i<hoteles.hotels.hotels.length;i++) {
+        if(hoteles.hotels.hotels[i].name.indexOf(hotel) > -1) {
+            printHotel(hoteles.hotels.hotels[i])
+        }
+    }
 }
