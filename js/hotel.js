@@ -189,12 +189,20 @@ function printCabify() {
     $htmlList.append('<ul>');
     if (cars.length > 0) {
         for (e = 0; e < cars.length; e++) {
-            if (cars[e].vehicle_type.name.indexOf("Lite") > 0 || cars[e].vehicle_type.name.indexOf("Executive") > 0) {
+            if (typecar.indexOf("All") > -1) {
                 $htmlList.append('<li><img width="20" height="20" src='+cars[e].vehicle_type.icons.regular+'> - ' + cars[e].vehicle_type.name + ' <input type="radio"></li>');
                 $htmlList.append('<li>tipo:' + cars[e].vehicle_type.name + '</li>');
                 $htmlList.append('<li>' + cars[e].vehicle_type.description + '</li>');
                 $htmlList.append('<li>Precio:' + cars[e].price_formatted + '</li>');
+            }  else {
+                if (cars[e].vehicle_type.name.indexOf("Lite") > 0 || cars[e].vehicle_type.name.indexOf("Executive") > 0 ) {
+                    $htmlList.append('<li><img width="20" height="20" src='+cars[e].vehicle_type.icons.regular+'> - ' + cars[e].vehicle_type.name + ' <input type="radio"></li>');
+                    $htmlList.append('<li>tipo:' + cars[e].vehicle_type.name + '</li>');
+                    $htmlList.append('<li>' + cars[e].vehicle_type.description + '</li>');
+                    $htmlList.append('<li>Precio:' + cars[e].price_formatted + '</li>');
+                }
             }
+
         }
     } else {
         $htmlList.append('<li>Coches: 0</li>');
