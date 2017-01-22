@@ -102,7 +102,7 @@ function printHotel(hotel) {
 
     var originP = getOrigenCoor(origin)
     //setMap(parseFloat(hotel.longitude),parseFloat(hotel.latitude));
-    setMap2(parseFloat(originP.lon),parseFloat(originP.lat),parseFloat(hotel.longitude),parseFloat(hotel.latitude));
+    setMap3(parseFloat(originP.lon),parseFloat(originP.lat),parseFloat(hotel.longitude),parseFloat(hotel.latitude));
     calculateDistance(hotel)
 
     var $nameHotelH = $('#nameHotel');
@@ -256,6 +256,68 @@ function setMap2(Olon,Olat,Dlon,Dlat) {
     });
 }
 
+
+function setMap3(lon,lat,lon2,lat2) {
+    console.log(lon)
+    console.log(lat)
+
+    var lonc = (lon + lon2)/2;
+    var latc = (lat + lat2)/2;
+
+    var originIcon = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+    });
+
+    var originIconStyle = new ol.style.Style({
+        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+            anchor: [0.5, 46],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'pixels',
+            opacity: 0.75,
+            src: 'https://www.cabify.com/user/themes/cabify/img/favicon.ico'
+        }))
+    });
+
+    originIcon.setStyle(originIconStyle)
+
+    var hotelIcon = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat([lon2, lat2]))
+    });
+
+    var hotelIconStyle = new ol.style.Style({
+        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+            anchor: [0.5, 46],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'pixels',
+            opacity: 0.75,
+            src: 'https://openlayers.org/en/v3.20.1/examples/data/icon.png'
+        }))
+    });
+
+    hotelIcon.setStyle(hotelIconStyle)
+
+    var vectorSource = new ol.source.Vector({
+        features: [originIcon, hotelIcon],
+    });
+
+    var vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+    });
+
+
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }), vectorLayer
+        ],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.transform([lonc, latc],'EPSG:4326', 'EPSG:3857'),
+            zoom: 10
+        })
+    });
+}
 function getOrigenCoor(nameOrigin) {
     /*
      Aeropuerto T2; 40.4695137;-3.5702567
@@ -268,8 +330,8 @@ function getOrigenCoor(nameOrigin) {
      */
     if (nameOrigin.indexOf("Aeropuerto de Barajas") > 0) {
         return {
-            "lat":40.488019,
-            "lon":-3.585858
+            "lat":40.4695137,
+            "lon":-3.5702567
         }
     } else if (nameOrigin.indexOf("Estación de Chamartin") > 0) {
         return {
