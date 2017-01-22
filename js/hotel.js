@@ -55,7 +55,7 @@ function nextPage() {
 }
 
 function goEnd() {
-    ChangeUrl('page', 'end.html');
+    ChangeUrl('page2', 'end.html');
 }
 
 function getCookie() {
@@ -165,21 +165,21 @@ function printCabify() {
     else
         $htmlList.append('<h3>Personas del viaje: '+persons+'</h3>');
 
-    $htmlList.append('<h5>CO2 1 persona tipo coche lite: '+(distance*co2).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
-    $htmlList.append('<h5>CO2 1 persona tipo coche executive: '+((distance*co2)*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
-    $htmlList.append('<h5>CO2 1 persona tipo coche eléctrico: 0 Kg CO<sub>2</sub></h5>');
+    $htmlList.append('<h5>CO2 1 persona tipo coche lite: '+(distance*co2).toString().substring(0,5)+' Kg CO<sub>2</sub> * Persona</h5>');
+    $htmlList.append('<h5>CO2 1 persona tipo coche executive: '+((distance*co2)*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub> * Persona</h5>');
+    $htmlList.append('<h5>CO2 1 persona tipo coche eléctrico: 0 Kg CO<sub>2</sub> * Persona</h5>');
 
     if(simulation) {
         $htmlList.append('<h3>¡¡Comparte tu coche!! - ¿Si fuerais 4 personas?</h3>');
     }
-        $htmlList.append('<h5>Coche compartido '+persons+' tipo lite: '+((distance*co2)/parseInt(persons)).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
-        $htmlList.append('<h5>Coche compartido '+persons+' tipo executive: '+(((distance*co2)/parseInt(persons))*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
-        $htmlList.append('<h5>Coche compartido '+persons+' tipo eléctrico: 0 Kg CO<sub>2</sub></h5>');
+        $htmlList.append('<h5>Coche compartido '+persons+' tipo lite: '+((distance*co2)/parseInt(persons)).toString().substring(0,5)+' Kg CO<sub>2</sub> * Persona</h5>');
+        $htmlList.append('<h5>Coche compartido '+persons+' tipo executive: '+(((distance*co2)/parseInt(persons))*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub> * Persona</h5>');
+        $htmlList.append('<h5>Coche compartido '+persons+' tipo eléctrico: 0 Kg CO<sub>2</sub> * Persona</h5>');
 
     if(!simulation) {
-        $htmlList.append('<h5>Cada viajero un coche tipo lite: '+(((distance*co2))*parseInt(persons)).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
-        $htmlList.append('<h5>Cada viajero un coche tipo executive: '+((((distance*co2))*parseInt(persons))*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
-        $htmlList.append('<h5>Cada viajero un coche tipo eléctrico: 0 Kg CO<sub>2</sub></h5>');
+        $htmlList.append('<h5>Cada viajero un coche tipo lite: '+(((distance*co2))*parseInt(persons)).toString().substring(0,5)+' Kg CO<sub>2</sub> * Persona</h5>');
+        $htmlList.append('<h5>Cada viajero un coche tipo executive: '+((((distance*co2))*parseInt(persons))*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub> * Persona</h5>');
+        $htmlList.append('<h5>Cada viajero un coche tipo eléctrico: 0 Kg CO<sub>2</sub> * Persona</h5>');
     }
 
 
