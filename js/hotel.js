@@ -54,6 +54,10 @@ function nextPage() {
     ChangeUrl('page', 'cars.html');
 }
 
+function goEnd() {
+    ChangeUrl('page', 'end.html');
+}
+
 function getCookie() {
     console.log(document.cookie)
 }
@@ -77,12 +81,30 @@ var hotel;
 var origin;
 var breakfast;
 var price;
+var distance;
+
+function calculateDistance(hotel) {
+    var hotelPos =  {
+        "lat":parseFloat(hotel.latitude),
+        "lon":parseFloat(hotel.longitude)
+    }
+    var originPos = getOrigenCoor(origin);
+
+
+    distance = getDistanceFromLatLonInKm(hotelPos.lat,hotelPos.lon,originPos.lat,originPos.lon)//getDistance(hotelPos,originPos);
+
+}
+
 
 function printHotel(hotel) {
     console.debug(hotel)
     var hotelRoms = hotel.rooms;
 
     setMap(parseFloat(hotel.longitude),parseFloat(hotel.latitude));
+    calculateDistance(hotel)
+
+    var $nameHotelH = $('#nameHotel');
+    $nameHotelH.append(hotel.name)
 
     var $htmlList = $('#infoHotel');
     $htmlList.append('<ul>');
@@ -128,11 +150,45 @@ function printHotel(hotel) {
 
 function printCabify() {
     var $htmlList = $('#infoCabify');
+
+    var simulation = false
+    if(parseInt(persons) == 1) {
+        persons = 4
+        simulation = true
+    }
+
+    //1km 0,15 Kg CO2
+    var co2 = 0.15
+    $htmlList.append('<h3>¿Cual es tu huella ecológica en  '+distance.toString().substring(0,5)+' kms?</h3>');
+    if (simulation)
+        $htmlList.append('<h3>Personas del viaje: 1</h3>');
+    else
+        $htmlList.append('<h3>Personas del viaje: '+persons+'</h3>');
+
+    $htmlList.append('<h5>CO2 1 persona tipo coche lite: '+(distance*co2).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
+    $htmlList.append('<h5>CO2 1 persona tipo coche executive: '+((distance*co2)*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
+    $htmlList.append('<h5>CO2 1 persona tipo coche eléctrico: 0 Kg CO<sub>2</sub></h5>');
+
+    if(simulation) {
+        $htmlList.append('<h3>¡¡Comparte tu coche!! - ¿Si fuerais 4 personas?</h3>');
+    }
+        $htmlList.append('<h5>Coche compartido '+persons+' tipo lite: '+((distance*co2)/parseInt(persons)).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
+        $htmlList.append('<h5>Coche compartido '+persons+' tipo executive: '+(((distance*co2)/parseInt(persons))*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
+        $htmlList.append('<h5>Coche compartido '+persons+' tipo eléctrico: 0 Kg CO<sub>2</sub></h5>');
+
+    if(!simulation) {
+        $htmlList.append('<h5>Cada viajero un coche tipo lite: '+(((distance*co2))*parseInt(persons)).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
+        $htmlList.append('<h5>Cada viajero un coche tipo executive: '+((((distance*co2))*parseInt(persons))*1.20).toString().substring(0,5)+' Kg CO<sub>2</sub></h5>');
+        $htmlList.append('<h5>Cada viajero un coche tipo eléctrico: 0 Kg CO<sub>2</sub></h5>');
+    }
+
+
+
     $htmlList.append('<ul>');
     if (cars.length > 0) {
         for (e = 0; e < cars.length; e++) {
-            if (cars[e].vehicle_type.name.indexOf(typecar) > 0) {
-                $htmlList.append('<li><img width="20" height="20" src='+cars[e].vehicle_type.icons.regular+'> - ' + cars[e].vehicle_type.name + '</li>');
+            if (cars[e].vehicle_type.name.indexOf("Lite") > 0 || cars[e].vehicle_type.name.indexOf("Executive") > 0) {
+                $htmlList.append('<li><img width="20" height="20" src='+cars[e].vehicle_type.icons.regular+'> - ' + cars[e].vehicle_type.name + ' <input type="radio"></li>');
                 $htmlList.append('<li>tipo:' + cars[e].vehicle_type.name + '</li>');
                 $htmlList.append('<li>' + cars[e].vehicle_type.description + '</li>');
                 $htmlList.append('<li>Precio:' + cars[e].price_formatted + '</li>');
@@ -145,9 +201,40 @@ function printCabify() {
 
 }
 
+
+function getOrigenCoor(nameOrigin) {
+    /*
+     Aeropuerto T2; 40.4695137;-3.5702567
+     Estación de Atocha; 40.406438; -3.690668
+     Estación Chamartín; 40.471719; -3.682684
+     40.488019, -3.585858
+     <option>Aeropuerto de Barajas</option>
+     <option>Estación de Chamartin</option>
+     <option>Estación de Atocha</option>
+     */
+    if (nameOrigin.indexOf("Aeropuerto de Barajas") > 0) {
+        return {
+            "lat":40.488019,
+            "lon":-3.585858
+        }
+    } else if (nameOrigin.indexOf("Estación de Chamartin") > 0) {
+        return {
+            "lat":40.471719,
+            "lat":-3.682684
+        }
+    } else {
+        //Estación de Atocha
+        return {
+            "lat":40.406438,
+            "lon":-3.690668
+        }
+    }
+}
 function setMap(lon,lat) {
     console.log(lat)
     console.log(lon)
+
+
 
     var map = new ol.Map({
         layers: [
@@ -183,4 +270,38 @@ function initResult() {
             printCabify()
         }
     }
+}
+
+var rad = function(x) {
+    return x * Math.PI / 180;
+};
+
+var getDistance = function(p1, p2) {
+    var R = 6378137; // Earth’s mean radius in meter
+    var dLat = rad(p2.lat - p1.lat);
+    var dLong = rad(p2.lon - p1.lon);
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
+        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d; // returns the distance in meter
+};
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1);
+    var a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return (d*10)*1.30;
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI/180)
 }
