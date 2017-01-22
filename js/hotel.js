@@ -100,7 +100,9 @@ function printHotel(hotel) {
     console.debug(hotel)
     var hotelRoms = hotel.rooms;
 
-    setMap(parseFloat(hotel.longitude),parseFloat(hotel.latitude));
+    var originP = getOrigenCoor(origin)
+    //setMap(parseFloat(hotel.longitude),parseFloat(hotel.latitude));
+    setMap2(parseFloat(originP.lon),parseFloat(originP.lat),parseFloat(hotel.longitude),parseFloat(hotel.latitude));
     calculateDistance(hotel)
 
     var $nameHotelH = $('#nameHotel');
@@ -201,6 +203,50 @@ function printCabify() {
 
 }
 
+
+function setMap2(Olon,Olat,Dlon,Dlat) {
+    console.log(Olon)
+    console.log(Olat)
+    console.log(Dlat)
+    console.log(Dlon)
+
+    var lon = (Olon + Dlon)/2;
+    var lat = (Olat + Dlat)/2;
+
+    var hotel = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.fromLonLat([Dlon, Dlat]))
+    });
+
+    hotel.setStyle(new ol.style.Style({
+        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+            color: '#ae2d70',
+            src: 'https://openlayers.org/en/v3.20.1/examples/data/dot.png'
+        }))
+    }));
+
+    var vectorSource = new ol.source.Vector({
+        features: [hotel],
+        projection: 'EPSG:4326'
+    });
+
+    var vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+    });
+
+
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }), vectorLayer
+        ],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.transform([lon, lat],'EPSG:4326', 'EPSG:3857'),
+            zoom: 10
+        })
+    });
+}
 
 function getOrigenCoor(nameOrigin) {
     /*
